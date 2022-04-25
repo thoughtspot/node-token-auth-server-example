@@ -4,6 +4,13 @@ import cors from "cors";
 import axios from "axios";
 import morgan from "morgan";
 
+import {
+  AccessLevelEnum,
+  Client,
+  DEFAULT_CONFIGURATION,
+  SessionController,
+} from "@thoughtspot/rest-api-sdk";
+
 const TS_SECRET_KEY = process.env.TS_SECRET_KEY;
 const TS_HOST =
   process.env.TS_HOST || `https://embed-1-do-not-delete.thoughtspotdev.cloud`;
@@ -50,6 +57,21 @@ app.get("/api/gettoken/:user", async (req, res) => {
     console.error("Error", error.response.status);
     res.status(500).send("Error getting token");
   }
+});
+
+app.get("/api/v2/gettoken/:user", async (req, res) => {
+    const { user } = req.params;
+    DEFAULT_CONFIGURATION.baseUrl = TS_HOST;
+    DEFAULT_CONFIGURATION.acceptLanguage = "*";
+    let client = new Client(DEFAULT_CONFIGURATION);
+    const sessionController = new SessionController(client);
+    const tokenRes = await sessionController.getToken({
+      userName: user,
+      secretKey: process.env.TS_SECRET_KEY,
+      accessLevel: AccessLevelEnum.FULL,
+    });
+
+    res.send(tokenRes.result.token?.toString());
 });
 
 export default app;
