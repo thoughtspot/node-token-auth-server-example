@@ -54,7 +54,7 @@ app.get("/api/gettoken/:user", async (req, res) => {
     res.send(userToken.data);
   } catch (error: any) {
     // console.error(error.request);
-    console.error("Error", error.response.status);
+    console.error("Error", error.response.status, error.response, error);
     res.status(500).send("Error getting token");
   }
 });
