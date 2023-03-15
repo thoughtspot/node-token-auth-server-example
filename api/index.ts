@@ -4,16 +4,13 @@ import cors from "cors";
 import axios from "axios";
 import morgan from "morgan";
 
-import {
-  AccessLevelEnum,
-  Client,
-  DEFAULT_CONFIGURATION,
-  SessionController,
-} from "@thoughtspot/rest-api-sdk";
-
 const TS_SECRET_KEY = process.env.TS_SECRET_KEY;
 const TS_HOST =
   process.env.TS_HOST || `https://embed-1-do-not-delete.thoughtspotdev.cloud`;
+
+axios.defaults.httpsAgent = new (require("https").Agent)({
+  rejectUnauthorized: false,
+});
 // create express server on port 3000
 const app = express();
 
@@ -32,10 +29,13 @@ app.get("/api", (req, res) => {
 
 app.get("/api/gettoken/:user", async (req, res) => {
   const { user } = req.params;
+  const { groups } = req.body;
   const data = new URLSearchParams({
     secret_key: process.env.TS_SECRET_KEY,
     username: user,
     access_level: "FULL",
+    auto_create: "true",
+    ...(groups ? { group_identifiers: groups } : {}),
   });
 
   try {
@@ -59,19 +59,33 @@ app.get("/api/gettoken/:user", async (req, res) => {
   }
 });
 
-app.get("/api/v2/gettoken/:user", async (req, res) => {
-    const { user } = req.params;
-    DEFAULT_CONFIGURATION.baseUrl = TS_HOST;
-    DEFAULT_CONFIGURATION.acceptLanguage = "*";
-    let client = new Client(DEFAULT_CONFIGURATION);
-    const sessionController = new SessionController(client);
-    const tokenRes = await sessionController.getToken({
-      userName: user,
-      secretKey: process.env.TS_SECRET_KEY,
-      accessLevel: AccessLevelEnum.FULL,
-    });
-
-    res.send(tokenRes.result.token?.toString());
+app.get("/v2/api/gettoken/:user", async (req, res) => {
+  const { user } = req.params;
+  let { groups } = req.body;
+  try {
+    const userToken: any = await axios.post(
+      `${TS_HOST}/api/rest/2.0/auth/token/full`,
+      {
+        secret_key: process.env.TS_SECRET_KEY,
+        username: user,
+        auto_create: true,
+        ...(groups ? { group_identifiers: groups } : {}),
+      },
+      {
+        headers: {
+          accept: "application/json",
+          "Content-Type": "application/json",
+        },
+      }
+    )
+    console.debug(userToken.data);
+    res.send(userToken.data.token);
+  } catch (error: any) {
+    console.error(error);
+    console.error("Error", error, error.response.status, error.response, error);
+    res.status(500).send("Error getting token");
+  };
 });
+
 
 export default app;
