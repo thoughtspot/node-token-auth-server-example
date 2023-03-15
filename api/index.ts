@@ -27,7 +27,7 @@ app.get("/api", (req, res) => {
   res.send("Hello World!");
 });
 
-app.get("/api/gettoken/:user", async (req, res) => {
+app.all("/api/gettoken/:user", async (req, res) => {
   const { user } = req.params;
   const { groups } = req.body;
   const data = new URLSearchParams({
@@ -59,7 +59,7 @@ app.get("/api/gettoken/:user", async (req, res) => {
   }
 });
 
-app.get("/v2/api/gettoken/:user", async (req, res) => {
+app.all("/v2/api/gettoken/:user", async (req, res) => {
   const { user } = req.params;
   let { groups } = req.body;
   try {
