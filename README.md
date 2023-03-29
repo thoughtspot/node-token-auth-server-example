@@ -12,13 +12,13 @@ $ npm i
 ## Usage
 
 ```
-$ TS_SECRET_KEY=<secret-key> TS_HOST=<ts-host-server> npm start
+$ TS_SECRET_KEY=<secret-key> TS_HOST=<ts-host-server> PORT=3030 npm start
 ```
 
 Now, you should be able to access the below endpoints:
 
-- `http://localhost:3001/api/gettoken/:user` [GET/POST]
-- `http://localhost:3001/api/v2/gettoken/:user` [GET/POST]
+- `http://localhost:3030/api/gettoken/:user` [GET/POST]
+- `http://localhost:3030/api/v2/gettoken/:user` [GET/POST]
 
 In the POST body, one could send the below params:
 

@@ -34,7 +34,7 @@ app.all("/api/gettoken/:user", async (req, res) => {
     secret_key: process.env.TS_SECRET_KEY,
     username: user,
     access_level: "FULL",
-    autocreate: true,
+    autocreate: "true",
     ...(groups ? { group_identifiers: groups } : {}),
   });
 
