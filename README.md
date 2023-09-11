@@ -23,3 +23,5 @@ Now, you should be able to access the below endpoints:
 In the POST body, one could send the below params:
 
 - groups: string[] # Array of groupIds which will be assigned to this user. If empty, then the current groups are maintained.
+
+See [Codesandbox](https://codesandbox.io/s/big-tse-react-demo-i4g9xi?file=/src/App.tsx) for complete usage demo.
