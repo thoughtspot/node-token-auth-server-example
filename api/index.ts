@@ -59,7 +59,7 @@ app.all("/api/gettoken/:user", async (req, res) => {
   }
 });
 
-app.all("/v2/api/gettoken/:user", async (req, res) => {
+app.all("/api/v2/gettoken/:user", async (req, res) => {
   const { user } = req.params;
   let { groups } = req.body;
   try {
